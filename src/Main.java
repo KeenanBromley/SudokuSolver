@@ -35,25 +35,20 @@ public class Main {
             }
         }
 
-        //List<List> openSpaces = new ArrayList<>();
+        //Declase openSpaces list
+        List<List> openSpaces = new ArrayList<>();
+        findOpenSpaces(board, openSpaces);
 
-        //Sets is solved to false
-        boolean isSolved = false;
 
         //Loops through the board until the board is solved
-        while (!isSolved) {
-            if (contains(board, 0) == false) {
-                isSolved = true;
-                break;
-            }
-            else {
-                for (int i = 0; i < 9; i++) {
-                    for (int j = 0; j < 9; j++) {
-                        if (board[i][j] == 0) {
-                            findPossibilities(board, possibilities, i, j);
-                            setValue(board, possibilities, i, j);
-                        }
-                    }
+        while (openSpaces.size() != 0) {
+            for (int i = 0; i < openSpaces.size(); i++) {
+                int x = (int) openSpaces.get(i).get(0);
+                int y = (int) openSpaces.get(i).get(1);
+                findPossibilities(board, possibilities, x, y);
+                if (setValue(board, possibilities, x, y)) {
+                    openSpaces.remove(i);
+                    i--;
                 }
             }
         }
@@ -75,7 +70,6 @@ public class Main {
     static void findPossibilities(int[][] board, List[][] possibilities, int x, int y) {
         checkRowCol(board, possibilities, x, y);
         checkBox(board, possibilities, x, y);
-        setValue(board, possibilities, x, y);
     }
 
     //Checks the row and column for all numbers already being used and removes them from the possibilities list
@@ -179,10 +173,12 @@ public class Main {
     }
 
     //Sets the value of the square if there is only one possible number
-    static void setValue(int[][] board, List[][] possibilities, int x, int y) {
+    static boolean setValue(int[][] board, List[][] possibilities, int x, int y) {
         if (board[x][y] == 0 && possibilities[x][y].size() == 1) {
             board[x][y] = (int) possibilities[x][y].get(0);
+            return true;
         }
+        return false;
     }
 
     //Checks the whole board for a specified value
@@ -195,6 +191,20 @@ public class Main {
             }
         }
         return false;
+    }
+
+    //Finds all open spaces on the board
+    static void findOpenSpaces(int[][] board, List openSpaces) {
+        for (int i = 0; i < 9; i++) {
+            for (int j = 0; j < 9; j++) {
+                if (board[i][j] == 0) {
+                    List<Integer> location = new ArrayList<>();
+                    location.add(i);
+                    location.add(j);
+                    openSpaces.add(location);
+                }
+            }
+        }
     }
 
    //Prints the board to the console
