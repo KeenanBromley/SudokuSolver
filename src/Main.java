@@ -6,15 +6,15 @@ public class Main {
         long startTime = System.currentTimeMillis();
 
         //Creates the sudoku board
-        int[][] board = { {7, 6, 0, 8, 4, 0, 0, 0, 3},
-                          {0, 0, 1, 0, 0, 0, 7, 0, 0},
-                          {0, 2, 0, 0, 0, 0, 0, 5, 0},
-                          {0, 0, 0, 0, 9, 0, 1, 0, 0},
-                          {0, 0, 0, 7, 6, 0, 0, 0, 2},
-                          {2, 0, 0, 0, 0, 0, 4, 3, 0},
-                          {0, 5, 0, 0, 0, 0, 3, 0, 0},
-                          {3, 1, 0, 0, 8, 0, 2, 9, 0},
-                          {0, 4, 0, 3, 1, 9, 6, 7, 0} };
+        int[][] board = { {0, 0, 0, 0, 0, 0, 0, 6, 0},
+                          {8, 0, 2, 0, 0, 0, 0, 4, 0},
+                          {0, 0, 0, 0, 7, 0, 8, 0, 9},
+                          {0, 0, 0, 0, 9, 0, 0, 0, 0},
+                          {0, 5, 0, 0, 0, 0, 1, 3, 0},
+                          {0, 0, 0, 3, 2, 0, 0, 0, 8},
+                          {5, 0, 1, 6, 0, 3, 4, 0, 0},
+                          {9, 6, 0, 4, 0, 0, 0, 0, 0},
+                          {0, 7, 0, 0, 0, 0, 0, 5, 0} };
 
 
         //Creates a 2D array of lists for the possibilities
@@ -35,13 +35,14 @@ public class Main {
             }
         }
 
-        //Declase openSpaces list
+        //Declares openSpaces list
         List<List> openSpaces = new ArrayList<>();
         findOpenSpaces(board, openSpaces);
 
 
         //Loops through the board until the board is solved
         while (openSpaces.size() != 0) {
+            boolean madeProgress = false;
             for (int i = 0; i < openSpaces.size(); i++) {
                 int x = (int) openSpaces.get(i).get(0);
                 int y = (int) openSpaces.get(i).get(1);
@@ -49,12 +50,18 @@ public class Main {
                 if (setValue(board, possibilities, x, y)) {
                     openSpaces.remove(i);
                     i--;
+                    madeProgress = true;
                 }
+            }
+            if (!madeProgress) {
+                System.out.println("Can't solve puzzle with current input");
+                System.out.println();
+                break;
             }
         }
 
 
-        //Prints out the sovled board
+        //Prints out the solved board
         printBoard(board);
 
        //Calculates time elapsed and prints it to the console
@@ -177,18 +184,6 @@ public class Main {
         if (board[x][y] == 0 && possibilities[x][y].size() == 1) {
             board[x][y] = (int) possibilities[x][y].get(0);
             return true;
-        }
-        return false;
-    }
-
-    //Checks the whole board for a specified value
-    static boolean contains(int[][] board, int value) {
-        for (int[] row : board) {
-            for (int element : row) {
-                if (element == value) {
-                    return true;
-                }
-            }
         }
         return false;
     }
